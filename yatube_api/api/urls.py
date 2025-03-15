@@ -2,7 +2,7 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 from .views import PostViewSet, GroupViewSet, CommentViewSet, FollowViewSet
 
-
+# Создаёт роутер для автоматической генерации URL-адресов
 router = DefaultRouter()
 router.register(r'posts', PostViewSet, basename='posts')
 router.register(r'groups', GroupViewSet, basename='groups')

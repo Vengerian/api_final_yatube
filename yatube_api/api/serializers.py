@@ -26,15 +26,15 @@ class CommentSerializer(serializers.ModelSerializer):
 class GroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = Group
-        fields = ('id', 'title', 'slug', 'description')
-        read_only_fields = ('id', 'title', 'slug', 'description')
+        fields = ('id', 'title', 'slug', 'description') # Оставляет только нужные поля
+        read_only_fields = ('id', 'title', 'slug', 'description') # Все поля только для чтения
 
 
 class FollowSerializer(serializers.ModelSerializer):
     user = serializers.SlugRelatedField(
         slug_field='username',
         queryset=get_user_model().objects.all(),
-        default=serializers.CurrentUserDefault()
+        default=serializers.CurrentUserDefault()  # По умолчанию устанавливает текущего пользователя
     )
     following = serializers.SlugRelatedField(
         slug_field='username',
@@ -48,10 +48,11 @@ class FollowSerializer(serializers.ModelSerializer):
             validators.UniqueTogetherValidator(
                 queryset=Follow.objects.all(),
                 fields=('user', 'following'),
-                message=('Подписка уже существует')
+                message=('Подписка уже существует') # Запрещает повторные подписки
             ),
         )
 
+    # Проверяет, не подписывается ли пользователь сам на себя
     def validate(self, data):
         if data['user'] == data['following']:
             raise serializers.ValidationError(

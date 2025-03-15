@@ -24,6 +24,7 @@ class PostViewSet(PermissionViewset):
     serializer_class = PostSerializer
     pagination_class = pagination.LimitOffsetPagination
 
+    # Устанавливает текущего пользователя как автора при создании поста
     def perform_create(self, serializer):
         return serializer.save(
             author=self.request.user
@@ -34,6 +35,7 @@ class CommentViewSet(PermissionViewset):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
 
+    # Возвращает комментарии только для конкретного поста
     def get_queryset(self):
         return self.get_post_obj().comments.all()
 
@@ -61,8 +63,10 @@ class FollowViewSet(
     filter_backends = (filters.SearchFilter,)
     search_fields = ('following__username',)
 
+    # Возвращает список подписок текущего пользователя
     def get_queryset(self):
         return self.request.user.follower.all()
 
+    # Устанавливает текущего пользователя как автора подписки
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
